@@ -8,28 +8,20 @@ export const metadata = {
 
 const guides = [
   {
-    name: 'Maris Tamm',
-    role: 'Head Guide & Co-Founder',
-    specialty: 'Medieval History & Architecture',
-    bio: 'Maris holds a master\'s degree in medieval history from the University of Tartu. Born in Tallinn\'s old town, she grew up hearing stories about every tower, gate, and cobblestone lane. She specialises in making 800 years of history feel alive and immediate.',
-    initial: 'M',
+    name: 'Ingrid Tammaru',
+    role: 'Co-Founder',
+    specialty: 'Medieval History & Old Town',
+    bio: 'Ingrid grew up in the shadow of Toompea and has spent her life uncovering the hidden stories written into every cobblestone and guild hall of Tallinn\'s Old Town. She co-founded Tallinn Tours to share the city she loves with visitors who want more than a surface-level experience.',
+    initial: 'I',
     tours: ['Old Town Walking Tour', 'History Deep Dive', 'Towers & Walls Tour'],
   },
   {
-    name: 'Kaarel Leppik',
-    role: 'Senior Guide & Co-Founder',
-    specialty: 'Food Culture & Local Life',
-    bio: 'Kaarel spent five years working in Tallinn\'s restaurant scene before becoming a full-time guide. His food tours are legendary among guests for going far beyond the tourist restaurants and into the true culinary soul of Estonian cuisine.',
-    initial: 'K',
-    tours: ['Estonian Food Experience', 'Market & Tastes Tour', 'Evening Cellar Tour'],
-  },
-  {
-    name: 'Liisa Põld',
-    role: 'Photography & Evening Guide',
-    specialty: 'Photography & Atmospheric Walks',
-    bio: 'A professional photographer turned guide, Liisa knows every magical light and angle in the city. Her evening and photography tours attract guests from around the world who want to capture Tallinn at its most atmospheric.',
+    name: 'Liis Veskimäe',
+    role: 'Co-Founder',
+    specialty: 'Evening Tours & Local Culture',
+    bio: 'Liis is a born storyteller with a gift for bringing Tallinn\'s darker legends and vibrant neighbourhood culture to life after dark. She co-founded Tallinn Tours with a vision to create intimate, locally rooted experiences that linger long after guests leave Estonia.',
     initial: 'L',
-    tours: ['Golden Hour Photography Tour', 'Twilight Old Town Walk', 'Hidden Courtyards Tour'],
+    tours: ['Evening Legends & Ghost Tour', 'Kalamaja Adventure', 'Twilight Old Town Walk'],
   },
 ]
 
