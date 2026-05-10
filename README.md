@@ -1,36 +1,191 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tallinn Tours
 
-## Getting Started
+A full-stack booking platform for guided city tours in Tallinn, Estonia. Built with Next.js 16, Prisma 7, PostgreSQL, Tailwind CSS, and Resend.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework**: Next.js 16 (App Router)
+- **Database**: PostgreSQL via Prisma 7 ORM
+- **Styling**: Tailwind CSS v4
+- **Auth**: JWT (jsonwebtoken) with HttpOnly cookies
+- **Email**: Resend
+- **Validation**: Zod v4
+
+## Features
+
+### Public
+- Homepage with hero, featured tours, testimonials
+- Tours calendar with category filtering
+- Tour detail pages with booking
+- Registration flow with server-side capacity enforcement
+- Booking confirmation page
+- Self-service booking cancellation
+- About Us page
+
+### Admin (`/admin`)
+- Secure login (JWT, bcrypt)
+- Dashboard with stats
+- Create / edit / deactivate tours
+- View and manage registrations
+- Export registrations to CSV
+- Delete customer data (GDPR)
+
+---
+
+## Database Setup
+
+**We manage our own PostgreSQL database — no hosted database is provisioned automatically.**
+
+### 1. Create the database
+
+```sql
+CREATE DATABASE tallinn_tours;
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cp .env.example .env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Edit `.env` and set your `DATABASE_URL`:
 
-## Learn More
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/tallinn_tours"
+```
 
-To learn more about Next.js, take a look at the following resources:
+For local development with default PostgreSQL settings:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/tallinn_tours"
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Run migrations
 
-## Deploy on Vercel
+```bash
+npm run db:migrate
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This creates all tables: `Tour`, `Registration`, `Admin`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 4. Seed development data
+
+```bash
+npm run db:seed
+```
+
+Creates:
+- 1 admin account: `admin@tallinn-tours.com` / `admin123`
+- 6 sample tours (June–September 2026)
+- Sample registrations
+
+### 5. Generate Prisma client
+
+If you pulled a fresh checkout without running migrations:
+
+```bash
+npm run db:generate
+```
+
+---
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and fill in all values:
+
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `JWT_SECRET` | Random secret for JWT tokens (`openssl rand -hex 32`) |
+| `RESEND_API_KEY` | API key from [resend.com](https://resend.com) |
+| `FROM_EMAIL` | Sender address (must be verified in Resend) |
+| `ADMIN_NOTIFICATION_EMAIL` | Where to send new booking notifications |
+| `APP_BASE_URL` | Full URL of the app (e.g. `https://tallinn-tours.com`) |
+
+---
+
+## Development
+
+```bash
+npm install
+cp .env.example .env
+# edit .env
+
+npm run db:migrate   # apply schema to your database
+npm run db:seed      # optional: load sample data
+npm run dev          # start at http://localhost:3000
+```
+
+### Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start development server |
+| `npm run build` | Production build |
+| `npm run db:generate` | Regenerate Prisma client after schema changes |
+| `npm run db:migrate` | Apply new migrations |
+| `npm run db:seed` | Seed development data |
+| `npm run db:studio` | Open Prisma Studio (visual DB browser) |
+
+---
+
+## Production
+
+1. Set all environment variables on your hosting platform
+2. Run `npm run db:migrate` against your production database
+3. Run `npm run build && npm run start`
+
+### Connecting your own PostgreSQL
+
+Any standard PostgreSQL 14+ database works:
+
+```env
+# Supabase
+DATABASE_URL="postgresql://postgres.xxxx:PASSWORD@aws-0-eu-central-1.pooler.supabase.com:6543/postgres"
+
+# Neon
+DATABASE_URL="postgresql://user:password@ep-xxx.eu-west-1.aws.neon.tech/tallinn_tours?sslmode=require"
+
+# Self-hosted
+DATABASE_URL="postgresql://tallinn_tours_user:PASSWORD@db.example.com:5432/tallinn_tours"
+```
+
+---
+
+## Admin Access
+
+After seeding, log in at `/admin/login`:
+
+- **Email**: `admin@tallinn-tours.com`
+- **Password**: `admin123`
+
+Change the admin password before going to production.
+
+---
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── page.tsx                  # Homepage
+│   ├── about/page.tsx            # About Us
+│   ├── tours/page.tsx            # Tours listing
+│   ├── tours/[id]/page.tsx       # Tour detail
+│   ├── book/[tourId]/            # Booking form
+│   ├── confirmation/[code]/      # Booking confirmation
+│   ├── cancel/[token]/           # Cancellation
+│   ├── admin/                    # Admin dashboard
+│   └── api/                      # API routes
+├── components/                   # Shared React components
+└── lib/
+    ├── prisma.ts                 # Prisma client singleton
+    ├── auth.ts                   # JWT auth helpers
+    ├── email.ts                  # Resend email templates
+    ├── validations.ts            # Zod schemas
+    └── utils.ts                  # Formatting helpers
+prisma/
+├── schema.prisma                 # Database schema
+├── seed.ts                       # Development seed data
+└── migrations/                   # SQL migrations
+```

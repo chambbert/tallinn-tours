@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Tour {
+  id                     String         @id @default(cuid())
+  title                  String
+  slug                   String         @unique
+  description            String
+  shortDescription       String
+  date                   DateTime
+  durationMinutes        Int
+  meetingLocation        String
+  meetingLocationDetails String?
+  price                  Decimal        @db.Decimal(10, 2)
+  capacity               Int
+  imageUrl               String?
+  category               TourCategory   @default(WALKING)
+  isActive               Boolean        @default(true)
+  highlights             String[]       @default([])
+  includes               String[]       @default([])
+  difficulty             TourDifficulty @default(EASY)
+  language               String         @default("English")
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+
+  registrations Registration[]
+
+  @@index([date])
+  @@index([isActive])
+}
+
+model Registration {
+  id                String             @id @default(cuid())
+  tourId            String
+  tour              Tour               @relation(fields: [tourId], references: [id], onDelete: Restrict)
+  fullName          String
+  email             String
+  phone             String
+  groupSize         Int
+  country           String
+  city              String
+  specialRequests   String?
+  status            RegistrationStatus @default(CONFIRMED)
+  confirmationCode  String             @unique @default(cuid())
+  cancellationToken String             @unique @default(cuid())
+  notes             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([tourId])
+  @@index([email])
+  @@index([status])
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum TourCategory {
+  WALKING
+  HISTORY
+  FOOD
+  PHOTOGRAPHY
+  EVENING
+  ADVENTURE
+}
+
+enum TourDifficulty {
+  EASY
+  MODERATE
+  CHALLENGING
+}
+
+enum RegistrationStatus {
+  CONFIRMED
+  CANCELLED
+  PENDING
+}
