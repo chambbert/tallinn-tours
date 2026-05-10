@@ -57,15 +57,14 @@ export default async function HomePage() {
       {/* HERO */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1577086664693-894d8405334a?w=1920&q=80"
-          alt="Tallinn old town skyline"
+          src="/hero-map.jpg"
+          alt="Antique map of Reval (Tallinn), 1914"
           fill
           priority
-          className="object-cover"
-          unoptimized
+          className="object-cover object-center"
         />
         {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f1623]/60 via-[#0f1623]/40 to-[#0f1623]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f1623]/75 via-[#0f1623]/60 to-[#0f1623]" />
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#c9a84c]/40 bg-[#c9a84c]/10 text-[#c9a84c] text-sm font-medium mb-6">
